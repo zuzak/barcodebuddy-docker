@@ -74,22 +74,19 @@ RUN \
 # set version label
 ARG BUILD_DATE
 ARG VERSION
-ARG BBUDDY_RELEASE
-LABEL build_version="BarcodeBuddy ${VERSION} Build ${BUILD_DATE}"
+ARG BBUDDY_GITHUB_REPO=zuzak/barcodebuddy
+ARG BBUDDY_REF=master
+LABEL build_version="BarcodeBuddy ${VERSION} Build ${BUILD_DATE} (source: ${BBUDDY_GITHUB_REPO}@${BBUDDY_REF})"
 LABEL maintainer="Marc Ole Bulling"
 
 
 
 RUN \
- echo "**** Installing BarcodeBuddy ****" && \
+ echo "**** Installing BarcodeBuddy from ${BBUDDY_GITHUB_REPO}@${BBUDDY_REF} ****" && \
  mkdir -p /app/bbuddy && \
- if [ -z ${BBUDDY_RELEASE+x} ]; then \
-	BBUDDY_RELEASE=$(curl -sX GET "https://api.github.com/repos/Forceu/barcodebuddy/releases/latest" \
-	| awk '/tag_name/{print $4; exit}' FS='[""]'); \
- fi && \
  curl -o \
 	/tmp/bbuddy.tar.gz -L \
-	"https://github.com/Forceu/barcodebuddy/archive/${BBUDDY_RELEASE}.tar.gz" && \
+	"https://github.com/${BBUDDY_GITHUB_REPO}/archive/${BBUDDY_REF}.tar.gz" && \
  tar xf \
 	/tmp/bbuddy.tar.gz -C \
 	/app/bbuddy/ --strip-components=1 && \
